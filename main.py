@@ -1,5 +1,5 @@
 
-
+import matplotlib.pyplot as plt  
 import os.path as os
 from os import listdir
 
@@ -46,14 +46,15 @@ def show(l):
     if not isinstance(l,list):
         l = [l]
     n = len(l)
-    fig, axes = plt.subplots(nrows=n)
+    fig, axes = plt.subplots(ncols=n)
     count = 0
     axes = [axes] if n==1 else axes 
     for img in l:
         axes[count].imshow(img)
         count += 1
+#show([da.astronaut(),da.camera()])
         
-DATA_NUM = 10 # test num
+DATA_NUM = 300 # test num
 
 
 N_SEGMENTS = 200  # SLIC num
@@ -193,12 +194,12 @@ def preImg(name=DATA_NUM, color=False):
         ,labelMap))
         
     
-    show(img)
-    show(img2)
-    show(resoultImg)
+    show([img,mark_boundaries(img,labelMap)])
+    show([img2,resoultImg])
+
     print 'resoult',rate
 
 #pre(DATA_NUM,10)
-preImg(19)
+preImg('im103.jpg')
 
 
