@@ -5,12 +5,12 @@ import numpy as np
 from hpelm import ELM
 
 
-def getElm(data,label,clas=2,nn=10):
+def getElm(data,label,classification='', w=None,nn=10,func="sigm"):
 
-    print 'data,label shape=',data.shape,label.shape
+    print 'creat ELM, data,label shape=',data.shape,label.shape
     
-    elm = ELM(data.shape[1], label.shape[1])
-    elm.add_neurons(nn, "sigm")
+    elm = ELM(data.shape[1], label.shape[1],classification=classification,w=w)
+    elm.add_neurons(nn, func)
     elm.train(data, label, "c")
     return elm    
     

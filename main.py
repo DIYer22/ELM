@@ -15,6 +15,8 @@ from skimage.segmentation import slic,mark_boundaries
 import skimage as sk
 import skimage.io as io
 
+from yllib import *
+
 # random((m, n), max) => m*n matrix
 # random(n, max) => n*n matrix
 random = lambda shape,maxx:(np.random.random(
@@ -51,7 +53,7 @@ def show(l):
         axes[count].imshow(img)
         count += 1
         
-DATA_NUM = 100 # test num
+DATA_NUM = 10 # test num
 
 
 N_SEGMENTS = 200  # SLIC num
@@ -62,7 +64,7 @@ POS_MAX = int(N_SEGMENTS**0.5*5) # relative position
 NN = 20 # ELM nerve num
 
 def getLbp(img):
-    '''返回 26 维lbp
+    '''返回 58 维lbp
     '''
     METHOD = 'uniform'
     RADIUS = 3  # LBP radius
@@ -74,14 +76,14 @@ def getLbp(img):
 #gray = sk.color.rgb2gray(img)
 #lbp = getLbp(gray)
 #print lbp.max()
-
+@performance
 def getSlic(img):
     label = slic(img,N_SEGMENTS,COMPACTNESS)
     #show(mark_boundaries(img, label))
     return label
     
 
-
+@performance
 def getVectors(img, img2=None):
     
     labelMap = getSlic(img)
@@ -147,6 +149,7 @@ for i in range(DATA_NUM):
 #    label = [[1,0] if index==0 else[0,1] for index in label]
     print '%d/%d training:%s' % (i,DATA_NUM,files[i])
     if elm == []:
+#        w = np.array([1]*2)  ,classification='wc',w=w
         elm = getElm(data,label,nn=NN)
     else:
         elm.add_data(data,label)
@@ -175,7 +178,7 @@ def pre(begin=DATA_NUM,num=None):
 
 
 
-def preImg(name=DATA_NUM):
+def preImg(name=DATA_NUM, color=False):
     '''name: filename or index in files
     to predict and show both raw img and resoult img in Ipython
     '''
@@ -186,7 +189,7 @@ def preImg(name=DATA_NUM):
     data,answer,labelMap = getVectors(img,img2)
     rate,ind,pt=predict(elm,data,answer)
     resoultImg = np.array(map(lambda row:
-        map(lambda it:pt[it][0]>0.5,row)
+        map(lambda it:pt[it][0] if color else pt[it][0]>0.5,row)
         ,labelMap))
         
     
